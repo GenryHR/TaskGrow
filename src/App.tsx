@@ -6,6 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { I18nProvider } from "@/components/i18n/I18nProvider";
+import AllTasks from "./pages/AllTasks";
+import Completed from "./pages/Completed";
+import Garden from "./pages/Garden";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -16,11 +21,17 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ThemeProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <I18nProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/all" element={<AllTasks />} />
+              <Route path="/completed" element={<Completed />} />
+              <Route path="/garden" element={<Garden />} />
+              <Route path="/settings" element={<Settings />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </I18nProvider>
         </ThemeProvider>
       </BrowserRouter>
     </TooltipProvider>

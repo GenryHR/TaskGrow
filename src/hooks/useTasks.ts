@@ -37,6 +37,10 @@ export function useTasks() {
     setTasks((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
+  const updateTask = useCallback((id: string, updates: Partial<Pick<Task, "title" | "category" | "completed">>) => {
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, ...updates } : t)));
+  }, []);
+
   const byCategory = useCallback(
     (category: Category) => tasks.filter((t) => t.category === category),
     [tasks]
@@ -49,5 +53,5 @@ export function useTasks() {
     someday: byCategory("someday").length,
   }), [byCategory]);
 
-  return { tasks, addTask, toggleComplete, removeTask, byCategory, counts };
+  return { tasks, addTask, toggleComplete, updateTask, removeTask, byCategory, counts };
 }
