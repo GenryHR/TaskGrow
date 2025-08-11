@@ -100,6 +100,76 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
 }
+
+/* Theme palettes (HSL variables per theme) */
+:root.theme-default {
+  --bg-start: 222.2 47% 6%;
+  --bg-end: 260 40% 10%;
+  --primary: 220 90% 60%;
+  --accent: 270 80% 65%;
+}
+:root.theme-fantasy {
+  --bg-start: 275 55% 12%;
+  --bg-end: 320 60% 20%;
+  --primary: 290 80% 70%;
+  --accent: 20 95% 60%;
+}
+:root.theme-nature {
+  --bg-start: 160 30% 12%;
+  --bg-end: 120 35% 18%;
+  --primary: 150 65% 45%;
+  --accent: 45 95% 50%;
+}
+:root.theme-ocean {
+  --bg-start: 205 65% 12%;
+  --bg-end: 195 70% 18%;
+  --primary: 195 85% 55%;
+  --accent: 165 80% 50%;
+}
+:root.theme-arthouse {
+  --bg-start: 240 15% 8%;
+  --bg-end: 15 15% 12%;
+  --primary: 10 80% 60%;
+  --accent: 210 90% 65%;
+}
+
+/* Ambient gradient background helper */
+.app-gradient-bg {
+  background-image: linear-gradient(135deg, hsl(var(--bg-start)), hsl(var(--bg-end)));
+}
+
+/* Signature fog effect (very subtle) */
+.fog {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.fog::before,
+.fog::after {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  background: radial-gradient(60% 60% at 50% 50%, hsl(var(--accent) / 0.08), transparent 60%);
+  filter: blur(40px) saturate(120%);
+  animation: fog-move 80s linear infinite;
+}
+.fog::after {
+  animation-duration: 120s;
+  opacity: 0.6;
+}
+
+@keyframes fog-move {
+  0% { transform: translate3d(-5%, 0, 0) scale(1); }
+  50% { transform: translate3d(5%, 0, 0) scale(1.05); }
+  100% { transform: translate3d(-5%, 0, 0) scale(1); }
+}
+
+/* Micro-interactions */
+.hover-scale { @apply transition-transform duration-200 hover:scale-105; }
+.story-link { position: relative; display:inline-block; }
+.story-link::after { content:""; position:absolute; left:0; bottom:0; width:100%; height:2px; background:hsl(var(--primary)); transform:scaleX(0); transform-origin: 100% 100%; transition: transform .3s; }
+.story-link:hover::after { transform:scaleX(1); transform-origin: 0 100%; }
