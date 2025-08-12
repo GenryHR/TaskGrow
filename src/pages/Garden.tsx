@@ -1,9 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { SidebarNav } from "@/components/layout/SidebarNav";
 import { useI18n } from "@/components/i18n/I18nProvider";
+import { useTasks } from "@/hooks/useTasks";
 
 const Garden = () => {
   const { t } = useI18n();
+  const { tasks } = useTasks();
+  const completed = useMemo(() => tasks.filter((x) => x.completed).length, [tasks]);
+
   useEffect(() => {
     document.title = `${t("appName")} — ${t("garden")}`;
   }, [t]);
@@ -21,7 +25,15 @@ const Garden = () => {
         </aside>
         <main className="col-span-12 md:col-span-9 lg:col-span-9 min-h-[60vh]">
           <h2 className="text-lg font-semibold mb-4">{t("garden")}</h2>
-          <p className="text-sm text-muted-foreground">Mini-game will be back soon</p>
+          <div className="rounded-xl bg-secondary/30 p-6">
+            <p className="text-sm text-muted-foreground mb-2">Мини-сад растёт от завершённых задач.</p>
+            <div className="grid grid-cols-8 gap-2">
+              {Array.from({ length: completed || 1 }).map((_, i) => (
+                <div key={i} className="aspect-square rounded-full bg-primary/20 shadow-sm animate-fade-in" />
+              ))}
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">Завершено: {completed}</p>
+          </div>
         </main>
       </div>
     </div>

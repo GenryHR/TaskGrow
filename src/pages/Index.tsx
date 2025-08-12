@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { format, parseISO } from "date-fns";
 
 const order: Category[] = ["today", "tomorrow", "week", "someday"];
 
@@ -23,11 +24,7 @@ const Index = () => {
   const openCreate = (cat: Category) => {
     setActiveCategory(cat);
     setModalOpen(true);
-  };
-
-  const createTask = (title: string, category: Category) => {
-    addTask(title, category);
-    toast("Задача добавлена");
+    setEditing(null);
   };
 
   return (
@@ -80,8 +77,8 @@ const Index = () => {
         open={modalOpen}
         onOpenChange={setModalOpen}
         category={activeCategory}
-        onCreate={(title, category) => addTask(title, category)}
-        editing={editing ? { id: editing.id, title: editing.title, category: editing.category } : null}
+        onCreate={(payload) => addTask(payload)}
+        editing={editing ? { id: editing.id, title: editing.title, category: editing.category, description: editing.description, priority: editing.priority, dueDate: editing.dueDate } : null}
         onUpdate={(id, payload) => updateTask(id, payload)}
       />
 
@@ -110,6 +107,11 @@ function CategoryBlock({
   const hasTasks = tasks.length > 0;
   const sorted = useMemo(() => tasks.slice().sort((a, b) => Number(a.completed) - Number(b.completed)), [tasks]);
 
+  const prTint = (p: Task["priority"]) =>
+    p === "low" ? "priority-tint-low border-l-[3px] border-[hsl(var(--priority-low))]" :
+    p === "high" ? "priority-tint-high border-l-[3px] border-[hsl(var(--priority-high))]" :
+    "priority-tint-medium border-l-[3px] border-[hsl(var(--priority-medium))]";
+
   return (
     <section className="relative">
       <header
@@ -132,16 +134,26 @@ function CategoryBlock({
         ) : (
           <ul className="space-y-2">
             {sorted.map((t) => (
-              <li key={t.id} className="group flex items-center gap-3 rounded-lg bg-secondary/30 px-3 py-2 hover-scale" onClick={() => onEdit(t)}>
+              <li key={t.id} className={`group flex items-center gap-3 rounded-lg bg-secondary/30 px-3 py-2 hover-scale ${prTint(t.priority)}`} onClick={() => onEdit(t)}>
                 <Checkbox
                   checked={t.completed}
                   onCheckedChange={() => onToggle(t.id)}
                   onClick={(e) => e.stopPropagation()}
                   aria-label="Отметить выполненной"
                 />
-                <span className={`flex-1 text-sm ${t.completed ? "line-through text-muted-foreground" : ""}`}>
-                  {t.title}
-                </span>
+                <div className="flex-1">
+                  <span className={`block text-sm ${t.completed ? "line-through text-muted-foreground" : ""}`}>
+                    {t.title}
+                  </span>
+                  {t.description ? (
+                    <span className="block text-xs text-muted-foreground">{t.description}</span>
+                  ) : null}
+                </div>
+                {category === "someday" && t.dueDate ? (
+                  <span className="text-xs text-muted-foreground mr-1">
+                    {format(parseISO(t.dueDate), "dd.MM.yyyy")}
+                  </span>
+                ) : null}
                 <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => { e.stopPropagation(); onDelete(t.id); }} aria-label="Удалить">
                   <Trash2 className="h-4 w-4" />
                 </Button>
