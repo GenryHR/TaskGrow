@@ -107,10 +107,13 @@ function CategoryBlock({
   const hasTasks = tasks.length > 0;
   const sorted = useMemo(() => tasks.slice().sort((a, b) => Number(a.completed) - Number(b.completed)), [tasks]);
 
-  const prTint = (p: Task["priority"]) =>
-    p === "low" ? "priority-tint-low border-l-[3px] border-[hsl(var(--priority-low))]" :
-    p === "high" ? "priority-tint-high border-l-[3px] border-[hsl(var(--priority-high))]" :
-    "priority-tint-medium border-l-[3px] border-[hsl(var(--priority-medium))]";
+  const getPriorityClass = (priority: Task["priority"]) => {
+    switch (priority) {
+      case "low": return "task-priority-low";
+      case "high": return "task-priority-high";
+      default: return "";
+    }
+  };
 
   return (
     <section className="relative">
@@ -125,7 +128,7 @@ function CategoryBlock({
 
       <div className="mt-3 space-y-2">
         {!hasTasks ? (
-          <div className="relative overflow-hidden rounded-lg p-8 bg-secondary/30 hover-scale" onClick={onClickHeader} role="button" tabIndex={0}>
+          <div className="relative overflow-hidden rounded-lg p-8 bg-secondary/30 hover-scale animate-fade-in cursor-pointer" onClick={onClickHeader} role="button" tabIndex={0}>
             <div className="absolute inset-0 opacity-60">
               <div className="fog" />
             </div>
@@ -134,7 +137,7 @@ function CategoryBlock({
         ) : (
           <ul className="space-y-2">
             {sorted.map((t) => (
-              <li key={t.id} className={`group flex items-center gap-3 rounded-lg bg-secondary/30 px-3 py-2 hover-scale ${prTint(t.priority)}`} onClick={() => onEdit(t)}>
+              <li key={t.id} className={`group flex items-center gap-3 rounded-lg bg-secondary/30 px-3 py-2 hover-scale cursor-pointer animate-slide-up ${getPriorityClass(t.priority)}`} onClick={() => onEdit(t)}>
                 <Checkbox
                   checked={t.completed}
                   onCheckedChange={() => onToggle(t.id)}

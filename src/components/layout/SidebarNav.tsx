@@ -9,6 +9,7 @@ export const SidebarNav = () => {
     { to: "/all", label: t("allTasks") },
     { to: "/completed", label: t("completed") },
     { to: "/garden", label: t("garden") },
+    { to: "/trash", label: "Корзина" },
     { to: "/settings", label: t("settings") },
   ];
   return (

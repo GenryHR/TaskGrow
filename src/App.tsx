@@ -10,6 +10,7 @@ import { I18nProvider } from "@/components/i18n/I18nProvider";
 import AllTasks from "./pages/AllTasks";
 import Completed from "./pages/Completed";
 import Garden from "./pages/Garden";
+import Trash from "./pages/Trash";
 import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
               <Route path="/all" element={<AllTasks />} />
               <Route path="/completed" element={<Completed />} />
               <Route path="/garden" element={<Garden />} />
+              <Route path="/trash" element={<Trash />} />
               <Route path="/settings" element={<Settings />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

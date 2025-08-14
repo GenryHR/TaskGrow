@@ -12,10 +12,13 @@ export type Task = {
   category: Category;
   dueDate?: string; // ISO date string: YYYY-MM-DD
   completed: boolean;
+  completedAt?: number; // Timestamp when task was completed
+  deleted: boolean;
+  deletedAt?: number; // Timestamp when task was deleted
   createdAt: number;
 };
 
-const STORAGE_KEY = "tasks_v1";
+const STORAGE_KEY = "tasks_v2";
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -54,6 +57,7 @@ export function useTasks() {
           category: payload.category,
           dueDate: payload.dueDate,
           completed: false,
+          deleted: false,
           createdAt: Date.now(),
         },
         ...prev,
@@ -63,11 +67,27 @@ export function useTasks() {
   );
 
   const toggleComplete = useCallback((id: string) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
+    setTasks((prev) => prev.map((t) => (t.id === id ? { 
+      ...t, 
+      completed: !t.completed, 
+      completedAt: !t.completed ? Date.now() : undefined 
+    } : t)));
   }, []);
 
   const removeTask = useCallback((id: string) => {
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, deleted: true, deletedAt: Date.now() } : t)));
+  }, []);
+
+  const restoreTask = useCallback((id: string) => {
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, deleted: false, deletedAt: undefined } : t)));
+  }, []);
+
+  const permanentlyDeleteTask = useCallback((id: string) => {
     setTasks((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
+  const clearTrash = useCallback(() => {
+    setTasks((prev) => prev.filter((t) => !t.deleted));
   }, []);
 
   const updateTask = useCallback(
@@ -80,9 +100,13 @@ export function useTasks() {
     []
   );
 
+  const activeTasks = useMemo(() => tasks.filter((t) => !t.deleted && !t.completed), [tasks]);
+  const completedTasks = useMemo(() => tasks.filter((t) => !t.deleted && t.completed), [tasks]);
+  const deletedTasks = useMemo(() => tasks.filter((t) => t.deleted), [tasks]);
+
   const byCategory = useCallback(
-    (category: Category) => tasks.filter((t) => getEffectiveCategory(t) === category),
-    [tasks, getEffectiveCategory]
+    (category: Category) => activeTasks.filter((t) => getEffectiveCategory(t) === category),
+    [activeTasks, getEffectiveCategory]
   );
 
   const counts = useMemo(
@@ -95,5 +119,18 @@ export function useTasks() {
     [byCategory]
   );
 
-  return { tasks, addTask, toggleComplete, updateTask, removeTask, byCategory, counts };
+  return { 
+    tasks: activeTasks, 
+    completedTasks,
+    deletedTasks,
+    addTask, 
+    toggleComplete, 
+    updateTask, 
+    removeTask, 
+    restoreTask,
+    permanentlyDeleteTask,
+    clearTrash,
+    byCategory, 
+    counts 
+  };
 }

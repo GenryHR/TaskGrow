@@ -16,6 +16,14 @@ const AllTasks = () => {
 
   const sorted = useMemo(() => tasks.slice().sort((a, b) => b.createdAt - a.createdAt), [tasks]);
 
+  const getPriorityClass = (priority: "low" | "medium" | "high") => {
+    switch (priority) {
+      case "low": return "task-priority-low";
+      case "high": return "task-priority-high";
+      default: return "";
+    }
+  };
+
   return (
     <div className="min-h-screen relative app-gradient-bg">
       <div className="fog" />
@@ -30,20 +38,27 @@ const AllTasks = () => {
         </aside>
         <main className="col-span-12 md:col-span-9 lg:col-span-9 min-h-[60vh]">
           <h2 className="text-lg font-semibold mb-4">{t("allTasks")}</h2>
-          <ul className="space-y-2">
-            {sorted.map((t) => (
-              <li key={t.id} className="group flex items-start gap-3 rounded-lg bg-secondary/30 px-3 py-2 hover-scale">
-                <Checkbox checked={t.completed} onCheckedChange={() => toggleComplete(t.id)} />
-                <div className="flex-1">
-                  <div className={`text-sm ${t.completed ? "line-through text-muted-foreground" : ""}`}>{t.title}</div>
-                  {t.description && <div className="text-xs text-muted-foreground">{t.description}</div>}
-                </div>
-                <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => removeTask(t.id)} aria-label="Удалить">
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </li>
-            ))}
-          </ul>
+          {sorted.length === 0 ? (
+            <div className="text-center py-12 animate-fade-in">
+              <div className="text-4xl mb-4">📝</div>
+              <p className="text-sm text-muted-foreground">Нет активных задач</p>
+            </div>
+          ) : (
+            <ul className="space-y-2">
+              {sorted.map((task) => (
+                <li key={task.id} className={`group flex items-start gap-3 rounded-lg bg-secondary/30 px-3 py-2 hover-scale animate-slide-up ${getPriorityClass(task.priority)}`}>
+                  <Checkbox checked={task.completed} onCheckedChange={() => toggleComplete(task.id)} />
+                  <div className="flex-1">
+                    <div className={`text-sm ${task.completed ? "line-through text-muted-foreground" : ""}`}>{task.title}</div>
+                    {task.description && <div className="text-xs text-muted-foreground">{task.description}</div>}
+                  </div>
+                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity hover-scale" onClick={() => removeTask(task.id)} aria-label="Удалить">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
         </main>
       </div>
     </div>

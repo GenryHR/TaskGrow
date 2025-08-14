@@ -5,11 +5,11 @@ import { useTasks } from "@/hooks/useTasks";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { format } from "date-fns";
 
 const Completed = () => {
   const { t } = useI18n();
-  const { tasks, toggleComplete, removeTask } = useTasks();
-  const list = tasks.filter((x) => x.completed);
+  const { completedTasks, toggleComplete, removeTask } = useTasks();
 
   useEffect(() => {
     document.title = `${t("appName")} — ${t("completed")}`;
@@ -28,18 +28,26 @@ const Completed = () => {
         </aside>
         <main className="col-span-12 md:col-span-9 lg:col-span-9 min-h-[60vh]">
           <h2 className="text-lg font-semibold mb-4">{t("completed")}</h2>
-          {list.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Нет завершённых задач</p>
+          {completedTasks.length === 0 ? (
+            <div className="text-center py-12 animate-fade-in">
+              <div className="text-4xl mb-4">✅</div>
+              <p className="text-sm text-muted-foreground">Нет завершённых задач</p>
+            </div>
           ) : (
             <ul className="space-y-2">
-              {list.map((t) => (
-                <li key={t.id} className="group flex items-start gap-3 rounded-lg bg-secondary/30 px-3 py-2 hover-scale">
-                  <Checkbox checked={t.completed} onCheckedChange={() => toggleComplete(t.id)} />
+              {completedTasks.map((task) => (
+                <li key={task.id} className="group flex items-start gap-3 rounded-lg bg-secondary/30 px-3 py-2 hover-scale animate-fade-in">
+                  <Checkbox checked={task.completed} onCheckedChange={() => toggleComplete(task.id)} />
                   <div className="flex-1">
-                    <div className="text-sm line-through text-muted-foreground">{t.title}</div>
-                    {t.description && <div className="text-xs text-muted-foreground">{t.description}</div>}
+                    <div className="text-sm line-through text-muted-foreground">{task.title}</div>
+                    {task.description && <div className="text-xs text-muted-foreground">{task.description}</div>}
+                    {task.completedAt && (
+                      <div className="text-xs text-muted-foreground">
+                        Завершено: {format(new Date(task.completedAt), "dd.MM.yyyy HH:mm")}
+                      </div>
+                    )}
                   </div>
-                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => removeTask(t.id)} aria-label="Удалить">
+                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity hover-scale" onClick={() => removeTask(task.id)} aria-label="Удалить">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </li>

@@ -20,6 +20,9 @@ export const TaskModal = ({
   onCreate,
   editing,
   onUpdate,
+  isTrashMode = false,
+  onRestore,
+  onPermanentDelete,
 }: {
   open: boolean;
   onOpenChange: (o: boolean) => void;
@@ -27,6 +30,9 @@ export const TaskModal = ({
   onCreate?: (payload: { title: string; category: Category; description?: string; priority: Priority; dueDate?: string }) => void;
   editing?: EditingPayload | null;
   onUpdate?: (id: string, payload: { title: string; category: Category; description?: string; priority: Priority; dueDate?: string }) => void;
+  isTrashMode?: boolean;
+  onRestore?: () => void;
+  onPermanentDelete?: () => void;
 }) => {
   const { t } = useI18n();
   const [title, setTitle] = useState("");
@@ -158,7 +164,22 @@ export const TaskModal = ({
             <Button variant="secondary" onClick={() => onOpenChange(false)}>
               {t("cancel")}
             </Button>
-            <Button onClick={submit}>{editing ? t("save") : t("addTask")}</Button>
+            {isTrashMode ? (
+              <>
+                <Button onClick={onRestore} className="hover-scale">
+                  Восстановить
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  onClick={onPermanentDelete}
+                  className="hover-scale"
+                >
+                  Удалить навсегда
+                </Button>
+              </>
+            ) : (
+              <Button onClick={submit}>{editing ? t("save") : t("addTask")}</Button>
+            )}
           </div>
         </div>
       </DialogContent>
