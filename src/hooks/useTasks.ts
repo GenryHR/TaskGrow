@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { differenceInCalendarDays, parseISO, startOfDay } from "date-fns";
+import { differenceInCalendarDays, parseISO, startOfDay, format, isToday } from "date-fns";
 
 export type Category = "today" | "tomorrow" | "week" | "someday";
 export type Priority = "low" | "medium" | "high";
@@ -109,6 +109,18 @@ export function useTasks() {
     [activeTasks, getEffectiveCategory]
   );
 
+  // Daily statistics
+  const dailyStats = useMemo(() => {
+    const today = startOfDay(new Date());
+    const todayTasks = tasks.filter(t => !t.deleted && t.createdAt >= today.getTime());
+    const todayCompleted = todayTasks.filter(t => t.completed && t.completedAt && isToday(new Date(t.completedAt)));
+    
+    return {
+      completed: todayCompleted.length,
+      total: todayTasks.length
+    };
+  }, [tasks]);
+
   const counts = useMemo(
     () => ({
       today: byCategory("today").length,
@@ -131,6 +143,7 @@ export function useTasks() {
     permanentlyDeleteTask,
     clearTrash,
     byCategory, 
-    counts 
+    counts,
+    dailyStats
   };
 }

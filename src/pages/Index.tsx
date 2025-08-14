@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 const order: Category[] = ["today", "tomorrow", "week", "someday"];
 
@@ -16,7 +17,8 @@ const Index = () => {
     document.title = "GrowTasks — Главный экран";
   }, []);
 
-  const { addTask, byCategory, counts, toggleComplete, removeTask, updateTask } = useTasks();
+  const { addTask, byCategory, counts, toggleComplete, removeTask, updateTask, dailyStats } = useTasks();
+  const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<Category>("today");
   const [editing, setEditing] = useState<Task | null>(null);
@@ -56,6 +58,7 @@ const Index = () => {
                 category={cat}
                 tasks={byCategory(cat)}
                 count={counts[cat] as number}
+                dailyStats={cat === "today" ? dailyStats : undefined}
                 onToggle={toggleComplete}
                 onDelete={(id) => {
                   removeTask(id);
@@ -67,6 +70,7 @@ const Index = () => {
                   setActiveCategory(task.category);
                   setModalOpen(true);
                 }}
+                onStatsClick={() => navigate("/completed")}
               />
             ))}
           </div>
@@ -91,18 +95,22 @@ function CategoryBlock({
   category,
   tasks,
   count,
+  dailyStats,
   onToggle,
   onDelete,
   onClickHeader,
   onEdit,
+  onStatsClick,
 }: {
   category: Category;
   tasks: Task[];
   count: number;
+  dailyStats?: { completed: number; total: number };
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onClickHeader: () => void;
   onEdit: (task: Task) => void;
+  onStatsClick?: () => void;
 }) {
   const hasTasks = tasks.length > 0;
   const sorted = useMemo(() => tasks.slice().sort((a, b) => Number(a.completed) - Number(b.completed)), [tasks]);
@@ -124,6 +132,17 @@ function CategoryBlock({
         <h2 className="text-lg font-semibold">
           {LABELS[category]} <span className="text-muted-foreground font-normal">({count})</span>
         </h2>
+        {dailyStats && (
+          <div 
+            className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer bg-secondary/50 px-3 py-1 rounded-full"
+            onClick={(e) => {
+              e.stopPropagation();
+              onStatsClick?.();
+            }}
+          >
+            {dailyStats.completed}/{dailyStats.total}
+          </div>
+        )}
       </header>
 
       <div className="mt-3 space-y-2">
@@ -137,14 +156,16 @@ function CategoryBlock({
         ) : (
           <ul className="space-y-2">
             {sorted.map((t) => (
-              <li key={t.id} className={`group flex items-center gap-3 rounded-lg bg-secondary/30 px-3 py-2 hover-scale cursor-pointer animate-slide-up ${getPriorityClass(t.priority)}`} onClick={() => onEdit(t)}>
-                <Checkbox
-                  checked={t.completed}
-                  onCheckedChange={() => onToggle(t.id)}
-                  onClick={(e) => e.stopPropagation()}
-                  aria-label="Отметить выполненной"
-                />
-                <div className="flex-1">
+              <li key={t.id} className={`group flex items-center gap-3 rounded-lg bg-secondary/30 px-3 py-2 cursor-pointer animate-slide-up transition-all duration-200 hover:bg-secondary/50 ${getPriorityClass(t.priority)}`} onClick={() => onEdit(t)}>
+                <div className="flex-shrink-0">
+                  <Checkbox
+                    checked={t.completed}
+                    onCheckedChange={() => onToggle(t.id)}
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label="Отметить выполненной"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
                   <span className={`block text-sm ${t.completed ? "line-through text-muted-foreground" : ""}`}>
                     {t.title}
                   </span>
@@ -153,11 +174,11 @@ function CategoryBlock({
                   ) : null}
                 </div>
                 {category === "someday" && t.dueDate ? (
-                  <span className="text-xs text-muted-foreground mr-1">
+                  <span className="text-xs text-muted-foreground mr-1 flex-shrink-0">
                     {format(parseISO(t.dueDate), "dd.MM.yyyy")}
                   </span>
                 ) : null}
-                <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => { e.stopPropagation(); onDelete(t.id); }} aria-label="Удалить">
+                <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" onClick={(e) => { e.stopPropagation(); onDelete(t.id); }} aria-label="Удалить">
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </li>

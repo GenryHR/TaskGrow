@@ -42,50 +42,58 @@ const Garden = () => {
         </aside>
         <main className="col-span-12 md:col-span-9 lg:col-span-9 min-h-[60vh]">
           <h2 className="text-lg font-semibold mb-4">{t("garden")}</h2>
-          <div className="rounded-xl bg-secondary/30 p-6 hover-glow">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold mb-2 animate-slide-up">🌱 Ваш цифровой сад</h3>
-              <p className="text-sm text-muted-foreground animate-slide-up">
-                Каждая выполненная задача помогает вашему саду расти. От семечка до могучего дерева!
-              </p>
-            </div>
-            
-            {completed === 0 ? (
-              <div className="text-center py-12 animate-fade-in">
-                <div className="text-6xl mb-4">🌱</div>
-                <p className="text-muted-foreground">Выполните первую задачу, чтобы посадить семечко!</p>
-              </div>
-            ) : (
-              <div className="garden-grid mx-auto">
-                {Array.from({ length: completed }).map((_, i) => {
-                  const stage = getPlantStage(i);
-                  const plantClass = getPlantClass(stage);
-                  return (
-                    <div 
-                      key={i} 
-                      className="flex items-end justify-center h-20 animate-grow-plant hover-scale"
-                      style={{ animationDelay: `${i * 0.1}s` }}
-                    >
-                      <div className={`${plantClass} animate-pulse-glow`} />
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-            
-            <div className="mt-6 text-center space-y-2 animate-slide-up">
-              <p className="text-sm font-medium">Завершено задач: {completed}</p>
-              <div className="flex justify-center gap-4 text-xs text-muted-foreground">
-                <span>🌱 Семечки: 0-2</span>
-                <span>🌿 Ростки: 3-7</span>
-                <span>🌸 Цветы: 8-14</span>
-                <span>🌳 Деревья: 15+</span>
-              </div>
-              {completed >= 15 && (
-                <p className="text-sm font-semibold text-primary animate-bounce-in">
-                  🎉 Поздравляем! Ваш сад превратился в лес!
+          <div className="garden-container rounded-xl overflow-hidden">
+            <div className="garden-sky"></div>
+            <div className="garden-ground">
+              <div className="text-center mb-6 relative z-10">
+                <h3 className="text-xl font-semibold mb-2 animate-slide-up text-white drop-shadow-lg">🌱 Ваш цифровой сад</h3>
+                <p className="text-sm text-white/90 animate-slide-up drop-shadow">
+                  Каждая выполненная задача помогает вашему саду расти. От семечка до могучего дерева!
                 </p>
+              </div>
+              
+              {completed === 0 ? (
+                <div className="text-center py-12 animate-fade-in relative z-10">
+                  <div className="text-6xl mb-4">🌱</div>
+                  <p className="text-white/80 drop-shadow">Выполните первую задачу, чтобы посадить семечко!</p>
+                </div>
+              ) : (
+                <div className="garden-plot relative z-10">
+                  {Array.from({ length: Math.min(completed, 20) }).map((_, i) => {
+                    const stage = getPlantStage(i);
+                    const plantClass = getPlantClass(stage);
+                    return (
+                      <div 
+                        key={i} 
+                        className="garden-spot animate-grow-plant hover-scale"
+                        style={{ animationDelay: `${i * 0.1}s` }}
+                      >
+                        <div className={`${plantClass} animate-pulse-glow`} />
+                      </div>
+                    );
+                  })}
+                  {completed > 20 && (
+                    <div className="col-span-full text-center mt-4">
+                      <p className="text-white/80 text-sm">+ {completed - 20} больше растений в вашем саду!</p>
+                    </div>
+                  )}
+                </div>
               )}
+              
+              <div className="mt-6 text-center space-y-2 animate-slide-up relative z-10">
+                <p className="text-sm font-medium text-white drop-shadow">Завершено задач: {completed}</p>
+                <div className="flex justify-center gap-4 text-xs text-white/80">
+                  <span>🌱 Семечки: 0-2</span>
+                  <span>🌿 Ростки: 3-7</span>
+                  <span>🌸 Цветы: 8-14</span>
+                  <span>🌳 Деревья: 15+</span>
+                </div>
+                {completed >= 15 && (
+                  <p className="text-sm font-semibold text-yellow-300 animate-bounce-in drop-shadow">
+                    🎉 Поздравляем! Ваш сад превратился в лес!
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </main>
