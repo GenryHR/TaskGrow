@@ -13,15 +13,50 @@ const Trash = () => {
   const [editing, setEditing] = useState<EditingPayload | null>(null);
 
   useEffect(() => {
-    document.title = `${t("appName")} — Корзина`;
+    try {
+      document.title = `${t("appName")} — Корзина`;
+    } catch (error) {
+      console.error("Error setting document title:", error);
+    }
   }, [t]);
 
   const handleRestore = (task: any) => {
-    restoreTask(task.id);
+    try {
+      restoreTask(task.id);
+    } catch (error) {
+      console.error("Error restoring task:", error);
+    }
   };
 
   const handlePermanentDelete = (task: any) => {
-    permanentlyDeleteTask(task.id);
+    try {
+      permanentlyDeleteTask(task.id);
+    } catch (error) {
+      console.error("Error permanently deleting task:", error);
+    }
+  };
+
+  const handleClearTrash = () => {
+    try {
+      clearTrash();
+    } catch (error) {
+      console.error("Error clearing trash:", error);
+    }
+  };
+
+  const handleEdit = (task: any) => {
+    try {
+      setEditing({
+        id: task.id,
+        title: task.title,
+        category: task.category,
+        description: task.description,
+        priority: task.priority,
+        dueDate: task.dueDate,
+      });
+    } catch (error) {
+      console.error("Error setting editing task:", error);
+    }
   };
 
   return (
@@ -42,7 +77,7 @@ const Trash = () => {
             {deletedTasks.length > 0 && (
               <Button 
                 variant="destructive" 
-                onClick={clearTrash}
+                onClick={handleClearTrash}
                 className="animate-fade-in hover-scale"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
@@ -61,14 +96,7 @@ const Trash = () => {
                 <li 
                   key={task.id} 
                   className="group flex items-start gap-3 rounded-lg bg-secondary/30 px-3 py-2 hover-scale cursor-pointer animate-fade-in"
-                  onClick={() => setEditing({
-                    id: task.id,
-                    title: task.title,
-                    category: task.category,
-                    description: task.description,
-                    priority: task.priority,
-                    dueDate: task.dueDate,
-                  })}
+                  onClick={() => handleEdit(task)}
                 >
                   <div className="flex-1">
                     <div className="text-sm text-muted-foreground line-through">{task.title}</div>
@@ -126,15 +154,23 @@ const Trash = () => {
           }}
           isTrashMode={true}
           onRestore={() => {
-            if (editing) {
-              restoreTask(editing.id);
-              setEditing(null);
+            try {
+              if (editing) {
+                restoreTask(editing.id);
+                setEditing(null);
+              }
+            } catch (error) {
+              console.error("Error restoring task from modal:", error);
             }
           }}
           onPermanentDelete={() => {
-            if (editing) {
-              permanentlyDeleteTask(editing.id);
-              setEditing(null);
+            try {
+              if (editing) {
+                permanentlyDeleteTask(editing.id);
+                setEditing(null);
+              }
+            } catch (error) {
+              console.error("Error permanently deleting task from modal:", error);
             }
           }}
         />

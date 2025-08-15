@@ -9,25 +9,61 @@ const Garden = () => {
   const completed = completedTasks.length;
   
   const getPlantStage = (index: number) => {
-    if (index < 3) return "seed";
-    if (index < 8) return "sprout";
-    if (index < 15) return "flower";
-    return "tree";
+    try {
+      if (index < 3) return "seed";
+      if (index < 8) return "sprout";
+      if (index < 15) return "flower";
+      return "tree";
+    } catch (error) {
+      console.error("Error getting plant stage:", error);
+      return "seed";
+    }
   };
 
   const getPlantClass = (stage: string) => {
-    switch (stage) {
-      case "seed": return "plant-seed";
-      case "sprout": return "plant-sprout";
-      case "flower": return "plant-flower";
-      case "tree": return "plant-tree";
-      default: return "plant-seed";
+    try {
+      switch (stage) {
+        case "seed": return "plant-seed";
+        case "sprout": return "plant-sprout";
+        case "flower": return "plant-flower";
+        case "tree": return "plant-tree";
+        default: return "plant-seed";
+      }
+    } catch (error) {
+      console.error("Error getting plant class:", error);
+      return "plant-seed";
     }
   };
 
   useEffect(() => {
-    document.title = `${t("appName")} — ${t("garden")}`;
+    try {
+      document.title = `${t("appName")} — ${t("garden")}`;
+    } catch (error) {
+      console.error("Error setting document title:", error);
+    }
   }, [t]);
+
+  const plantElements = useMemo(() => {
+    try {
+      return Array.from({ length: Math.min(completed, 20) }).map((_, i) => {
+        const stage = getPlantStage(i);
+        const plantClass = getPlantClass(stage);
+        return (
+          <div 
+            key={i} 
+            className="garden-spot animate-grow-plant hover-scale"
+            style={{ animationDelay: `${i * 0.1}s` }}
+          >
+            <div className={`${plantClass} animate-pulse-glow`} />
+          </div>
+        );
+      });
+    } catch (error) {
+      console.error("Error creating plant elements:", error);
+      return [];
+    }
+  }, [completed]);
+
   return (
     <div className="min-h-screen relative app-gradient-bg">
       <div className="fog" />
@@ -59,19 +95,7 @@ const Garden = () => {
                 </div>
               ) : (
                 <div className="garden-plot relative z-10">
-                  {Array.from({ length: Math.min(completed, 20) }).map((_, i) => {
-                    const stage = getPlantStage(i);
-                    const plantClass = getPlantClass(stage);
-                    return (
-                      <div 
-                        key={i} 
-                        className="garden-spot animate-grow-plant hover-scale"
-                        style={{ animationDelay: `${i * 0.1}s` }}
-                      >
-                        <div className={`${plantClass} animate-pulse-glow`} />
-                      </div>
-                    );
-                  })}
+                  {plantElements}
                   {completed > 20 && (
                     <div className="col-span-full text-center mt-4">
                       <p className="text-white/80 text-sm">+ {completed - 20} {t("morePlants")}</p>

@@ -6,9 +6,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const Settings = () => {
   const { t, lang, setLang } = useI18n();
+  
   useEffect(() => {
-    document.title = `${t("appName")} — ${t("settings")}`;
+    try {
+      document.title = `${t("appName")} — ${t("settings")}`;
+    } catch (error) {
+      console.error("Error setting document title:", error);
+    }
   }, [t]);
+
+  const handleLanguageChange = (value: string) => {
+    try {
+      setLang(value as any);
+    } catch (error) {
+      console.error("Error changing language:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen relative app-gradient-bg">
       <div className="fog" />
@@ -32,7 +46,7 @@ const Settings = () => {
           <section className="space-y-2">
             <h3 className="text-sm font-medium text-muted-foreground">{t("language")}</h3>
             <div className="w-56">
-              <Select value={lang} onValueChange={(v) => setLang(v as any)}>
+              <Select value={lang} onValueChange={handleLanguageChange}>
                 <SelectTrigger className="bg-secondary/50">
                   <SelectValue />
                 </SelectTrigger>

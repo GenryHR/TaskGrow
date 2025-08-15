@@ -4,20 +4,47 @@ import { Button } from "@/components/ui/button";
 
 const STORAGE_KEY = "onboarding_done_v1";
 
+// Safe localStorage functions
+const safeGetItem = (key: string): string | null => {
+  try {
+    return localStorage.getItem(key);
+  } catch (error) {
+    console.error("Error reading onboarding from localStorage:", error);
+    return null;
+  }
+};
+
+const safeSetItem = (key: string, value: string): void => {
+  try {
+    localStorage.setItem(key, value);
+  } catch (error) {
+    console.error("Error writing onboarding to localStorage:", error);
+  }
+};
+
 export const Onboarding = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const done = localStorage.getItem(STORAGE_KEY);
-    if (!done) {
-      const t = setTimeout(() => setOpen(true), 600);
-      return () => clearTimeout(t);
+    try {
+      const done = safeGetItem(STORAGE_KEY);
+      if (!done) {
+        const t = setTimeout(() => setOpen(true), 600);
+        return () => clearTimeout(t);
+      }
+    } catch (error) {
+      console.error("Error in onboarding effect:", error);
     }
   }, []);
 
   const close = () => {
-    localStorage.setItem(STORAGE_KEY, "1");
-    setOpen(false);
+    try {
+      safeSetItem(STORAGE_KEY, "1");
+      setOpen(false);
+    } catch (error) {
+      console.error("Error closing onboarding:", error);
+      setOpen(false);
+    }
   };
 
   return (

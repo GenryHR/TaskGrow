@@ -12,35 +12,61 @@ const Completed = () => {
   const { completedTasks, toggleComplete, removeTask } = useTasks();
 
   useEffect(() => {
-    document.title = `${t("appName")} — ${t("completed")}`;
+    try {
+      document.title = `${t("appName")} — ${t("completed")}`;
+    } catch (error) {
+      console.error("Error setting document title:", error);
+    }
   }, [t]);
 
   const groupedTasks = useMemo(() => {
-    const groups: { [key: string]: typeof completedTasks } = {};
-    
-    completedTasks.forEach(task => {
-      if (task.completedAt) {
-        const completedDate = new Date(task.completedAt);
-        if (isToday(completedDate)) {
-          if (!groups["today"]) groups["today"] = [];
-          groups["today"].push(task);
-        } else {
-          const dateKey = format(completedDate, "dd.MM.yyyy");
-          if (!groups[dateKey]) groups[dateKey] = [];
-          groups[dateKey].push(task);
+    try {
+      const groups: { [key: string]: typeof completedTasks } = {};
+      
+      completedTasks.forEach(task => {
+        if (task.completedAt) {
+          const completedDate = new Date(task.completedAt);
+          if (isToday(completedDate)) {
+            if (!groups["today"]) groups["today"] = [];
+            groups["today"].push(task);
+          } else {
+            const dateKey = format(completedDate, "dd.MM.yyyy");
+            if (!groups[dateKey]) groups[dateKey] = [];
+            groups[dateKey].push(task);
+          }
         }
-      }
-    });
+      });
 
-    // Sort by date (newest first)
-    const sortedGroups = Object.entries(groups).sort(([a], [b]) => {
-      if (a === "today") return -1;
-      if (b === "today") return 1;
-      return new Date(b.split('.').reverse().join('-')).getTime() - new Date(a.split('.').reverse().join('-')).getTime();
-    });
+      // Sort by date (newest first)
+      const sortedGroups = Object.entries(groups).sort(([a], [b]) => {
+        if (a === "today") return -1;
+        if (b === "today") return 1;
+        return new Date(b.split('.').reverse().join('-')).getTime() - new Date(a.split('.').reverse().join('-')).getTime();
+      });
 
-    return sortedGroups;
+      return sortedGroups;
+    } catch (error) {
+      console.error("Error grouping completed tasks:", error);
+      return [];
+    }
   }, [completedTasks]);
+
+  const handleToggleComplete = (id: string) => {
+    try {
+      toggleComplete(id);
+    } catch (error) {
+      console.error("Error toggling task completion:", error);
+    }
+  };
+
+  const handleDelete = (id: string) => {
+    try {
+      removeTask(id);
+    } catch (error) {
+      console.error("Error removing task:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen relative app-gradient-bg">
       <div className="fog" />
@@ -71,7 +97,7 @@ const Completed = () => {
                     {tasks.map((task) => (
                       <li key={task.id} className="group flex items-start gap-3 rounded-lg bg-secondary/30 px-3 py-2 transition-all duration-200 hover:bg-secondary/50 animate-slide-up">
                         <div className="flex-shrink-0">
-                          <Checkbox checked={task.completed} onCheckedChange={() => toggleComplete(task.id)} />
+                          <Checkbox checked={task.completed} onCheckedChange={() => handleToggleComplete(task.id)} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="text-sm line-through text-muted-foreground">{task.title}</div>
@@ -82,7 +108,7 @@ const Completed = () => {
                              </div>
                           )}
                         </div>
-                        <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" onClick={() => removeTask(task.id)} aria-label={t("delete")}>
+                        <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" onClick={() => handleDelete(task.id)} aria-label={t("delete")}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </li>

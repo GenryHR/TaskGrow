@@ -10,6 +10,24 @@ type I18nCtx = {
 
 const I18N_STORAGE_KEY = "app_lang_v1";
 
+// Safe localStorage functions
+const safeGetItem = (key: string): string | null => {
+  try {
+    return localStorage.getItem(key);
+  } catch (error) {
+    console.error("Error reading language from localStorage:", error);
+    return null;
+  }
+};
+
+const safeSetItem = (key: string, value: string): void => {
+  try {
+    localStorage.setItem(key, value);
+  } catch (error) {
+    console.error("Error writing language to localStorage:", error);
+  }
+};
+
 const dict = {
   ru: {
     appName: "GrowTasks",
@@ -118,20 +136,44 @@ const dict = {
 const I18nContext = createContext<I18nCtx | undefined>(undefined);
 
 export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
-  const [lang, setLangState] = useState<Lang>(() => (localStorage.getItem(I18N_STORAGE_KEY) as Lang) || "ru");
+  const [lang, setLangState] = useState<Lang>(() => {
+    const saved = safeGetItem(I18N_STORAGE_KEY) as Lang | null;
+    return saved ?? "ru";
+  });
 
   useEffect(() => {
-    localStorage.setItem(I18N_STORAGE_KEY, lang);
+    safeSetItem(I18N_STORAGE_KEY, lang);
   }, [lang]);
 
   const t = useMemo(() => {
-    const d = dict[lang];
-    return (key: keyof typeof d) => d[key];
+    try {
+      const d = dict[lang];
+      return (key: keyof typeof d) => {
+        if (key in d) {
+          return d[key];
+        }
+        console.warn(`Translation key not found: ${key}`);
+        return key;
+      };
+    } catch (error) {
+      console.error("Error in translation function:", error);
+      return (key: string) => key;
+    }
   }, [lang]);
 
-  const setLang = (l: Lang) => setLangState(l);
+  const setLang = (l: Lang) => {
+    try {
+      if (l in dict) {
+        setLangState(l);
+      } else {
+        console.warn(`Invalid language: ${l}`);
+      }
+    } catch (error) {
+      console.error("Error setting language:", error);
+    }
+  };
 
-  const value = useMemo(() => ({ lang, setLang, t }), [lang]);
+  const value = useMemo(() => ({ lang, setLang, t }), [lang, setLang, t]);
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 };
 

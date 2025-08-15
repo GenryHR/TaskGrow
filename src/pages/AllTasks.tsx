@@ -11,16 +11,43 @@ const AllTasks = () => {
   const { tasks, toggleComplete, removeTask } = useTasks();
 
   useEffect(() => {
-    document.title = `${t("appName")} — ${t("allTasks")}`;
+    try {
+      document.title = `${t("appName")} — ${t("allTasks")}`;
+    } catch (error) {
+      console.error("Error setting document title:", error);
+    }
   }, [t]);
 
-  const sorted = useMemo(() => tasks.slice().sort((a, b) => b.createdAt - a.createdAt), [tasks]);
+  const sorted = useMemo(() => {
+    try {
+      return tasks.slice().sort((a, b) => b.createdAt - a.createdAt);
+    } catch (error) {
+      console.error("Error sorting tasks:", error);
+      return tasks;
+    }
+  }, [tasks]);
 
   const getPriorityClass = (priority: "low" | "medium" | "high") => {
     switch (priority) {
       case "low": return "task-priority-low";
       case "high": return "task-priority-high";
       default: return "";
+    }
+  };
+
+  const handleToggleComplete = (id: string) => {
+    try {
+      toggleComplete(id);
+    } catch (error) {
+      console.error("Error toggling task completion:", error);
+    }
+  };
+
+  const handleDelete = (id: string) => {
+    try {
+      removeTask(id);
+    } catch (error) {
+      console.error("Error removing task:", error);
     }
   };
 
@@ -47,12 +74,12 @@ const AllTasks = () => {
             <ul className="space-y-2">
               {sorted.map((task) => (
                 <li key={task.id} className={`group flex items-start gap-3 rounded-lg bg-secondary/30 px-3 py-2 hover-scale animate-slide-up ${getPriorityClass(task.priority)}`}>
-                  <Checkbox checked={task.completed} onCheckedChange={() => toggleComplete(task.id)} />
+                  <Checkbox checked={task.completed} onCheckedChange={() => handleToggleComplete(task.id)} />
                   <div className="flex-1">
                     <div className={`text-sm ${task.completed ? "line-through text-muted-foreground" : ""}`}>{task.title}</div>
                     {task.description && <div className="text-xs text-muted-foreground">{task.description}</div>}
                   </div>
-                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity hover-scale" onClick={() => removeTask(task.id)} aria-label={t("delete")}>
+                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity hover-scale" onClick={() => handleDelete(task.id)} aria-label={t("delete")}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </li>

@@ -60,21 +60,25 @@ export const TaskModal = ({
   }, [open, editing, category]);
 
   const submit = () => {
-    const trimmed = title.trim();
-    if (!trimmed) return;
-    const payload = {
-      title: trimmed,
-      category: cat,
-      description: desc.trim() || undefined,
-      priority,
-      dueDate: date ? format(date, "yyyy-MM-dd") : undefined,
-    };
-    if (editing && onUpdate) {
-      onUpdate(editing.id, payload);
-    } else if (onCreate) {
-      onCreate(payload);
+    try {
+      const trimmed = title.trim();
+      if (!trimmed) return;
+      const payload = {
+        title: trimmed,
+        category: cat,
+        description: desc.trim() || undefined,
+        priority,
+        dueDate: date ? format(date, "yyyy-MM-dd") : undefined,
+      };
+      if (editing && onUpdate) {
+        onUpdate(editing.id, payload);
+      } else if (onCreate) {
+        onCreate(payload);
+      }
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error submitting task:", error);
     }
-    onOpenChange(false);
   };
 
   return (

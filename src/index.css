@@ -301,7 +301,7 @@ All colors MUST be HSL.
   border-left: 3px solid hsl(0 60% 50%);
 }
 
-/* Enhanced animations */
+/* Enhanced animations with fallbacks */
 @keyframes bounce-in {
   0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
   50% { transform: scale(1.05) rotate(-5deg); }
@@ -325,18 +325,65 @@ All colors MUST be HSL.
   100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
-/* Animation classes */
-.animate-bounce-in { animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
-.animate-slide-up { animation: slide-up 0.4s ease-out; }
-.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
-.animate-grow-plant { animation: grow-plant 0.8s ease-out; }
+@keyframes fade-in {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Animation classes with fallbacks */
+.animate-bounce-in { 
+  animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+}
+.animate-slide-up { 
+  animation: slide-up 0.4s ease-out; 
+}
+.animate-pulse-glow { 
+  animation: pulse-glow 2s ease-in-out infinite; 
+}
+.animate-grow-plant { 
+  animation: grow-plant 0.8s ease-out; 
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
 
 /* Micro-interactions */
-.hover-scale { @apply transition-all duration-300 hover:scale-105 hover:shadow-lg; }
-.hover-glow { @apply transition-all duration-300 hover:shadow-lg hover:shadow-primary/20; }
-.story-link { position: relative; display:inline-block; }
-.story-link::after { content:""; position:absolute; left:0; bottom:0; width:100%; height:2px; background:hsl(var(--primary)); transform:scaleX(0); transform-origin: 100% 100%; transition: transform .3s; }
-.story-link:hover::after { transform:scaleX(1); transform-origin: 0 100%; }
+.hover-scale { 
+  transition: all 0.3s ease; 
+}
+.hover-scale:hover { 
+  transform: scale(1.05); 
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); 
+}
+
+.hover-glow { 
+  transition: all 0.3s ease; 
+}
+.hover-glow:hover { 
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 10px 25px hsl(var(--primary) / 0.2); 
+}
+
+.story-link { 
+  position: relative; 
+  display: inline-block; 
+}
+.story-link::after { 
+  content: ""; 
+  position: absolute; 
+  left: 0; 
+  bottom: 0; 
+  width: 100%; 
+  height: 2px; 
+  background: hsl(var(--primary)); 
+  transform: scaleX(0); 
+  transform-origin: 100% 100%; 
+  transition: transform 0.3s; 
+}
+.story-link:hover::after { 
+  transform: scaleX(1); 
+  transform-origin: 0 100%; 
+}
 
 /* Enhanced Garden Styles with responsive design */
 .garden-container {
@@ -590,17 +637,17 @@ All colors MUST be HSL.
 
 /* Enhanced task interactions */
 .task-item {
-  @apply transition-all duration-300 ease-out;
+  transition: all 0.3s ease-out;
   transform-origin: left center;
 }
 
 .task-item:hover {
-  @apply shadow-lg;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   transform: translateX(4px) scale(1.02);
 }
 
 .task-checkbox {
-  @apply transition-all duration-200 ease-out;
+  transition: all 0.2s ease-out;
   position: relative;
   z-index: 10;
   flex-shrink: 0;
@@ -633,4 +680,15 @@ All colors MUST be HSL.
   background: linear-gradient(135deg, hsl(0 35% 8%) 0%, hsl(0 25% 12%) 100%);
   border-left: 4px solid hsl(0 70% 50%);
   box-shadow: 0 2px 8px hsl(0 70% 50% / 0.2);
+}
+
+/* Fallback for browsers that don't support CSS animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

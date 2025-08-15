@@ -14,7 +14,11 @@ const order: Category[] = ["today", "tomorrow", "week", "someday"];
 
 const Index = () => {
   useEffect(() => {
-    document.title = "GrowTasks — Главный экран";
+    try {
+      document.title = "GrowTasks — Главный экран";
+    } catch (error) {
+      console.error("Error setting document title:", error);
+    }
   }, []);
 
   const { addTask, byCategory, counts, toggleComplete, removeTask, updateTask, dailyStats } = useTasks();
@@ -24,9 +28,50 @@ const Index = () => {
   const [editing, setEditing] = useState<Task | null>(null);
 
   const openCreate = (cat: Category) => {
-    setActiveCategory(cat);
-    setModalOpen(true);
-    setEditing(null);
+    try {
+      setActiveCategory(cat);
+      setModalOpen(true);
+      setEditing(null);
+    } catch (error) {
+      console.error("Error opening create modal:", error);
+    }
+  };
+
+  const handleToggleComplete = (id: string) => {
+    try {
+      toggleComplete(id);
+    } catch (error) {
+      console.error("Error toggling task completion:", error);
+      toast("Ошибка при изменении статуса задачи");
+    }
+  };
+
+  const handleDelete = (id: string) => {
+    try {
+      removeTask(id);
+      toast("Удалено");
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      toast("Ошибка при удалении задачи");
+    }
+  };
+
+  const handleEdit = (task: Task) => {
+    try {
+      setEditing(task);
+      setActiveCategory(task.category);
+      setModalOpen(true);
+    } catch (error) {
+      console.error("Error editing task:", error);
+    }
+  };
+
+  const handleStatsClick = () => {
+    try {
+      navigate("/completed");
+    } catch (error) {
+      console.error("Error navigating to completed:", error);
+    }
   };
 
   return (
@@ -59,18 +104,11 @@ const Index = () => {
                 tasks={byCategory(cat)}
                 count={counts[cat] as number}
                 dailyStats={cat === "today" ? dailyStats : undefined}
-                onToggle={toggleComplete}
-                onDelete={(id) => {
-                  removeTask(id);
-                  toast("Удалено");
-                }}
+                onToggle={handleToggleComplete}
+                onDelete={handleDelete}
                 onClickHeader={() => openCreate(cat)}
-                onEdit={(task) => {
-                  setEditing(task);
-                  setActiveCategory(task.category);
-                  setModalOpen(true);
-                }}
-                onStatsClick={() => navigate("/completed")}
+                onEdit={handleEdit}
+                onStatsClick={handleStatsClick}
               />
             ))}
           </div>
@@ -81,9 +119,23 @@ const Index = () => {
         open={modalOpen}
         onOpenChange={setModalOpen}
         category={activeCategory}
-        onCreate={(payload) => addTask(payload)}
+        onCreate={(payload) => {
+          try {
+            addTask(payload);
+          } catch (error) {
+            console.error("Error creating task:", error);
+            toast("Ошибка при создании задачи");
+          }
+        }}
         editing={editing ? { id: editing.id, title: editing.title, category: editing.category, description: editing.description, priority: editing.priority, dueDate: editing.dueDate } : null}
-        onUpdate={(id, payload) => updateTask(id, payload)}
+        onUpdate={(id, payload) => {
+          try {
+            updateTask(id, payload);
+          } catch (error) {
+            console.error("Error updating task:", error);
+            toast("Ошибка при обновлении задачи");
+          }
+        }}
       />
 
       <Onboarding />
