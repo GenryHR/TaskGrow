@@ -77,7 +77,7 @@ const Trash = () => {
                     )}
                     {task.deletedAt && (
                       <div className="text-xs text-muted-foreground">
-                        Удалено: {format(new Date(task.deletedAt), "dd.MM.yyyy HH:mm")}
+                        {t("deletedAt")}: {format(new Date(task.deletedAt), "dd.MM.yyyy HH:mm")}
                       </div>
                     )}
                   </div>
@@ -89,7 +89,7 @@ const Trash = () => {
                         e.stopPropagation();
                         handleRestore(task);
                       }}
-                      aria-label="Восстановить"
+                      aria-label={t("restore")}
                       className="hover-scale"
                     >
                       <Undo2 className="h-4 w-4" />
@@ -101,7 +101,7 @@ const Trash = () => {
                         e.stopPropagation();
                         handlePermanentDelete(task);
                       }}
-                      aria-label="Удалить навсегда"
+                      aria-label={t("delete")}
                       className="text-destructive hover:text-destructive hover-scale"
                     >
                       <Trash2 className="h-4 w-4" />

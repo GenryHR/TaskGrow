@@ -74,7 +74,7 @@ const Garden = () => {
                   })}
                   {completed > 20 && (
                     <div className="col-span-full text-center mt-4">
-                      <p className="text-white/80 text-sm">+ {completed - 20} больше растений в вашем саду!</p>
+                      <p className="text-white/80 text-sm">+ {completed - 20} {t("morePlants")}</p>
                     </div>
                   )}
                 </div>

@@ -29,7 +29,7 @@ const AllTasks = () => {
       <div className="fog" />
       <header className="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-background/40 border-b">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <h1 className="text-xl md:text-2xl font-semibold tracking-tight">{t("appName")}</h1>
+          <h1 className="app-title text-xl md:text-2xl tracking-tight">{t("appName")}</h1>
         </div>
       </header>
       <div className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-12 gap-6">
@@ -41,7 +41,7 @@ const AllTasks = () => {
           {sorted.length === 0 ? (
             <div className="text-center py-12 animate-fade-in">
               <div className="text-4xl mb-4">📝</div>
-              <p className="text-sm text-muted-foreground">Нет активных задач</p>
+              <p className="text-sm text-muted-foreground">{t("empty")}</p>
             </div>
           ) : (
             <ul className="space-y-2">
@@ -52,7 +52,7 @@ const AllTasks = () => {
                     <div className={`text-sm ${task.completed ? "line-through text-muted-foreground" : ""}`}>{task.title}</div>
                     {task.description && <div className="text-xs text-muted-foreground">{task.description}</div>}
                   </div>
-                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity hover-scale" onClick={() => removeTask(task.id)} aria-label="Удалить">
+                  <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity hover-scale" onClick={() => removeTask(task.id)} aria-label={t("delete")}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </li>

@@ -14,7 +14,7 @@ const Settings = () => {
       <div className="fog" />
       <header className="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-background/40 border-b">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <h1 className="text-xl md:text-2xl font-semibold tracking-tight">{t("appName")}</h1>
+          <h1 className="app-title text-xl md:text-2xl tracking-tight">{t("appName")}</h1>
         </div>
       </header>
       <div className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-12 gap-6">

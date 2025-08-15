@@ -59,6 +59,8 @@ const dict = {
     gardenCongrats: "Поздравляем! Ваш сад превратился в лес!",
     completedAt: "Выполнено",
     completedToday: "Выполнено сегодня",
+    morePlants: "больше растений в вашем саду!",
+    deletedAt: "Удалено",
   },
   en: {
     appName: "GrowTasks",
@@ -108,6 +110,8 @@ const dict = {
     gardenCongrats: "Congratulations! Your garden has become a forest!",
     completedAt: "Completed",
     completedToday: "Completed today",
+    morePlants: "more plants in your garden!",
+    deletedAt: "Deleted",
   },
 };
 
