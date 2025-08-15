@@ -8,6 +8,9 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    fs: {
+      strict: false
+    }
   },
   base: mode === 'production' ? './' : '/',
   plugins: [
@@ -19,6 +22,7 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
   },
   build: {
     outDir: 'dist',
@@ -33,5 +37,11 @@ export default defineConfig(({ mode }) => ({
         }
       }
     }
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom']
+  },
+  define: {
+    __DEV__: mode === 'development'
   }
 }));
