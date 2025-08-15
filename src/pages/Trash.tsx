@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SidebarNav } from "@/components/layout/SidebarNav";
 import { useI18n } from "@/components/i18n/I18nProvider";
-import { useTasks } from "@/hooks/useTasks";
+import { useTasks, type Task } from "@/hooks/useTasks";
 import { Button } from "@/components/ui/button";
 import { Trash2, Undo2 } from "lucide-react";
 import { TaskModal, EditingPayload } from "@/components/tasks/TaskModal";
@@ -20,7 +20,7 @@ const Trash = () => {
     }
   }, [t]);
 
-  const handleRestore = (task: any) => {
+  const handleRestore = (task: Task) => {
     try {
       restoreTask(task.id);
     } catch (error) {
@@ -28,7 +28,7 @@ const Trash = () => {
     }
   };
 
-  const handlePermanentDelete = (task: any) => {
+  const handlePermanentDelete = (task: Task) => {
     try {
       permanentlyDeleteTask(task.id);
     } catch (error) {
@@ -44,7 +44,7 @@ const Trash = () => {
     }
   };
 
-  const handleEdit = (task: any) => {
+  const handleEdit = (task: Task) => {
     try {
       setEditing({
         id: task.id,

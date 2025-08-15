@@ -1,73 +1,152 @@
-# Welcome to your Lovable project
+# GrowTasks - Таск-менеджер с темами и микроанимациями
 
-## Project info
+Легкий и атмосферный таск-менеджер с темами и микроанимациями, построенный на React + TypeScript + Vite.
 
-**URL**: https://lovable.dev/projects/6ee86405-e915-482d-9a9c-7fed1e3a85b5
+## 🚀 Быстрый старт
 
-## How can I edit this code?
+### Предварительные требования
 
-There are several ways of editing your application.
+- **Node.js** версии 18 или выше
+- **Yarn** или **npm** (рекомендуется Yarn)
 
-**Use Lovable**
+### Установка и запуск
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/6ee86405-e915-482d-9a9c-7fed1e3a85b5) and start prompting.
+1. **Клонируйте репозиторий**
+   ```bash
+   git clone <your-repo-url>
+   cd essence-tasks
+   ```
 
-Changes made via Lovable will be committed automatically to this repo.
+2. **Установите зависимости**
+   ```bash
+   yarn install
+   # или
+   npm install
+   ```
 
-**Use your preferred IDE**
+3. **Запустите проект в режиме разработки**
+   ```bash
+   yarn dev
+   # или
+   npm run dev
+   ```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+4. **Откройте браузер**
+   - Перейдите по адресу: [http://localhost:8080](http://localhost:8080)
+   - Приложение должно загрузиться без ошибок
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Сборка для продакшена
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```bash
+yarn build
+# или
+npm run build
 ```
 
-**Edit a file directly in GitHub**
+Собранные файлы будут в папке `dist/`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🛠️ Технологии
 
-**Use GitHub Codespaces**
+- **Frontend**: React 18 + TypeScript
+- **Сборщик**: Vite 5
+- **Стили**: Tailwind CSS + CSS Variables
+- **UI компоненты**: Radix UI + shadcn/ui
+- **Роутинг**: React Router DOM
+- **Состояние**: React Hooks + localStorage
+- **Анимации**: CSS Animations + Framer Motion
+- **Пакетный менеджер**: Yarn
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 📁 Структура проекта
 
-## What technologies are used for this project?
+```
+src/
+├── components/          # React компоненты
+│   ├── ui/             # UI компоненты (shadcn/ui)
+│   ├── layout/         # Компоненты макета
+│   ├── theme/          # Управление темами
+│   ├── i18n/           # Интернационализация
+│   └── tasks/          # Компоненты задач
+├── hooks/               # React хуки
+├── pages/               # Страницы приложения
+├── lib/                 # Утилиты и хелперы
+└── index.css            # Глобальные стили
+```
 
-This project is built with:
+## 🎨 Темы
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Приложение поддерживает 5 встроенных тем:
+- **Default** - Стандартная темная тема
+- **Fantasy** - Фэнтезийная тема
+- **Nature** - Природная тема
+- **Ocean** - Пляж/океан тема
+- **Arthouse** - Артхаус тема
 
-## How can I deploy this project?
+## 🌱 Функции
 
-Simply open [Lovable](https://lovable.dev/projects/6ee86405-e915-482d-9a9c-7fed1e3a85b5) and click on Share -> Publish.
+- ✅ Создание, редактирование и удаление задач
+- ✅ Категории: Сегодня, Завтра, Неделя, Когда-нибудь
+- ✅ Приоритеты: Низкий, Средний, Высокий
+- ✅ Автоматическое перемещение задач по датам
+- ✅ Цифровой сад с ростом растений
+- ✅ Темы и анимации
+- ✅ Поддержка русского и английского языков
+- ✅ Адаптивный дизайн
+- ✅ Офлайн работа (localStorage)
 
-## Can I connect a custom domain to my Lovable project?
+## 🔧 Разработка
 
-Yes, you can!
+### Команды
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```bash
+# Запуск в режиме разработки
+yarn dev
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+# Сборка для продакшена
+yarn build
+
+# Предварительный просмотр сборки
+yarn preview
+
+# Проверка линтером
+yarn lint
+
+# Проверка TypeScript
+yarn tsc --noEmit
+```
+
+### Отладка
+
+Если возникают проблемы:
+
+1. **Проверьте консоль браузера** (F12 → Console)
+2. **Убедитесь, что все зависимости установлены**
+3. **Попробуйте очистить кэш**:
+   ```bash
+   yarn cache clean
+   rm -rf node_modules
+   yarn install
+   ```
+
+## 🐛 Известные проблемы
+
+- Предупреждения ESLint о Fast Refresh (не критично)
+- Некоторые предупреждения о зависимостях useMemo (не критично)
+
+## 📝 Лицензия
+
+MIT License
+
+## 🤝 Вклад в проект
+
+1. Форкните репозиторий
+2. Создайте ветку для новой функции
+3. Внесите изменения
+4. Создайте Pull Request
+
+## 📞 Поддержка
+
+Если у вас возникли проблемы или вопросы, создайте Issue в репозитории.
+
+---
+
+**Приятного использования GrowTasks! 🌟**

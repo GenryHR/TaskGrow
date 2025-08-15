@@ -3,6 +3,7 @@ import { SidebarNav } from "@/components/layout/SidebarNav";
 import { ThemeSelector } from "@/components/theme/ThemeSelector";
 import { useI18n } from "@/components/i18n/I18nProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { Lang } from "@/components/i18n/I18nProvider";
 
 const Settings = () => {
   const { t, lang, setLang } = useI18n();
@@ -17,7 +18,7 @@ const Settings = () => {
 
   const handleLanguageChange = (value: string) => {
     try {
-      setLang(value as any);
+      setLang(value as Lang);
     } catch (error) {
       console.error("Error changing language:", error);
     }
