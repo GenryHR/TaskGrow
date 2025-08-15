@@ -112,14 +112,21 @@ export function useTasks() {
   // Daily statistics
   const dailyStats = useMemo(() => {
     const today = startOfDay(new Date());
-    const todayTasks = tasks.filter(t => !t.deleted && t.createdAt >= today.getTime());
-    const todayCompleted = todayTasks.filter(t => t.completed && t.completedAt && isToday(new Date(t.completedAt)));
+    const todayCompleted = tasks.filter(t => 
+      !t.deleted && 
+      t.completed && 
+      t.completedAt && 
+      isToday(new Date(t.completedAt))
+    );
+    
+    // Total includes all tasks in "today" category (completed + incomplete)
+    const todayTotalTasks = byCategory("today").length + todayCompleted.length;
     
     return {
       completed: todayCompleted.length,
-      total: todayTasks.length
+      total: todayTotalTasks
     };
-  }, [tasks]);
+  }, [tasks, byCategory]);
 
   const counts = useMemo(
     () => ({

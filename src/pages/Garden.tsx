@@ -33,7 +33,7 @@ const Garden = () => {
       <div className="fog" />
       <header className="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-background/40 border-b">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <h1 className="text-xl md:text-2xl font-semibold tracking-tight">{t("appName")}</h1>
+          <h1 className="app-title text-xl md:text-2xl tracking-tight">{t("appName")}</h1>
         </div>
       </header>
       <div className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-12 gap-6">
@@ -46,16 +46,16 @@ const Garden = () => {
             <div className="garden-sky"></div>
             <div className="garden-ground">
               <div className="text-center mb-6 relative z-10">
-                <h3 className="text-xl font-semibold mb-2 animate-slide-up text-white drop-shadow-lg">🌱 Ваш цифровой сад</h3>
+                <h3 className="text-xl font-semibold mb-2 animate-slide-up text-white drop-shadow-lg">🌱 {t("gardenTitle")}</h3>
                 <p className="text-sm text-white/90 animate-slide-up drop-shadow">
-                  Каждая выполненная задача помогает вашему саду расти. От семечка до могучего дерева!
+                  {t("gardenDescription")}
                 </p>
               </div>
               
               {completed === 0 ? (
                 <div className="text-center py-12 animate-fade-in relative z-10">
                   <div className="text-6xl mb-4">🌱</div>
-                  <p className="text-white/80 drop-shadow">Выполните первую задачу, чтобы посадить семечко!</p>
+                  <p className="text-white/80 drop-shadow">{t("gardenEmpty")}</p>
                 </div>
               ) : (
                 <div className="garden-plot relative z-10">
@@ -81,16 +81,16 @@ const Garden = () => {
               )}
               
               <div className="mt-6 text-center space-y-2 animate-slide-up relative z-10">
-                <p className="text-sm font-medium text-white drop-shadow">Завершено задач: {completed}</p>
+                <p className="text-sm font-medium text-white drop-shadow">{t("gardenProgress")}: {completed}</p>
                 <div className="flex justify-center gap-4 text-xs text-white/80">
-                  <span>🌱 Семечки: 0-2</span>
-                  <span>🌿 Ростки: 3-7</span>
-                  <span>🌸 Цветы: 8-14</span>
-                  <span>🌳 Деревья: 15+</span>
+                  <span>🌱 {t("priorityLow")}: 0-2</span>
+                  <span>🌿 {t("priorityMedium")}: 3-7</span>
+                  <span>🌸 {t("priorityHigh")}: 8-14</span>
+                  <span>🌳 {t("completedAt")}: 15+</span>
                 </div>
                 {completed >= 15 && (
                   <p className="text-sm font-semibold text-yellow-300 animate-bounce-in drop-shadow">
-                    🎉 Поздравляем! Ваш сад превратился в лес!
+                    🎉 {t("gardenCongrats")}
                   </p>
                 )}
               </div>

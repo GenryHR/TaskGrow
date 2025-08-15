@@ -29,7 +29,7 @@ const Trash = () => {
       <div className="fog" />
       <header className="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-background/40 border-b">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <h1 className="text-xl md:text-2xl font-semibold tracking-tight">{t("appName")}</h1>
+          <h1 className="app-title text-xl md:text-2xl tracking-tight">{t("appName")}</h1>
         </div>
       </header>
       <div className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-12 gap-6">
@@ -38,7 +38,7 @@ const Trash = () => {
         </aside>
         <main className="col-span-12 md:col-span-9 lg:col-span-9 min-h-[60vh]">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Корзина</h2>
+            <h2 className="text-lg font-semibold">{t("trash")}</h2>
             {deletedTasks.length > 0 && (
               <Button 
                 variant="destructive" 
@@ -46,14 +46,14 @@ const Trash = () => {
                 className="animate-fade-in hover-scale"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Очистить корзину
+                {t("clearTrash")}
               </Button>
             )}
           </div>
           {deletedTasks.length === 0 ? (
             <div className="text-center py-12 animate-fade-in">
               <Trash2 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <p className="text-sm text-muted-foreground">Корзина пуста</p>
+              <p className="text-sm text-muted-foreground">{t("trashEmpty")}</p>
             </div>
           ) : (
             <ul className="space-y-2">

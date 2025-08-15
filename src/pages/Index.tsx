@@ -37,7 +37,7 @@ const Index = () => {
       {/* Header */}
       <header className="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-background/40 border-b">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <h1 className="text-xl md:text-2xl font-semibold tracking-tight">GrowTasks</h1>
+          <h1 className="app-title text-xl md:text-2xl tracking-tight">GrowTasks</h1>
           
         </div>
       </header>
@@ -156,13 +156,14 @@ function CategoryBlock({
         ) : (
           <ul className="space-y-2">
             {sorted.map((t) => (
-              <li key={t.id} className={`group flex items-center gap-3 rounded-lg bg-secondary/30 px-3 py-2 cursor-pointer animate-slide-up transition-all duration-200 hover:bg-secondary/50 ${getPriorityClass(t.priority)}`} onClick={() => onEdit(t)}>
+              <li key={t.id} className={`task-item group flex items-center gap-3 rounded-lg bg-secondary/30 px-3 py-2 cursor-pointer animate-slide-up transition-all duration-200 hover:bg-secondary/50 ${getPriorityClass(t.priority)}`} onClick={() => onEdit(t)}>
                 <div className="flex-shrink-0">
                   <Checkbox
                     checked={t.completed}
                     onCheckedChange={() => onToggle(t.id)}
                     onClick={(e) => e.stopPropagation()}
                     aria-label="Отметить выполненной"
+                    className="task-checkbox"
                   />
                 </div>
                 <div className="flex-1 min-w-0">
