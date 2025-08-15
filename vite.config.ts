@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => ({
       strict: false
     }
   },
-  base: mode === 'production' ? './' : '/',
+  base: '/',
   plugins: [
     react(),
     mode === 'development' &&
